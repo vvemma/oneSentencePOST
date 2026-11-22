@@ -2,7 +2,9 @@ package edu.causwict.restapi.controller;
 
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -28,5 +30,15 @@ public class PostController {
 		Post created = postService.create(title, content);
 
 		return created;
+	}
+
+	// Update
+	@PutMapping("/{id}")
+	public Post update(@PathVariable Long id, @RequestBody Map<String, Object> param) {
+		String title = (String) param.get("title");
+		String content = (String) param.get("content");
+		Post updated = postService.update(id, title, content);
+
+		return updated;
 	}
 }
