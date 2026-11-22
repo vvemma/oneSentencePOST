@@ -33,4 +33,14 @@ public class InMemoryPostRepository {
 		return Optional.ofNullable(store.get(id));
 	}
 
+	public boolean existsByTitle(String title) {
+		return store.values().stream()
+			.anyMatch(post -> title.equals(post.getTitle()));
+	}
+
+	public boolean existsByTitleAndIdNot(String title, Long id) {
+		return store.values().stream()
+			.anyMatch(post -> title.equals(post.getTitle()) && !post.getId().equals(id));
+	}
+
 }

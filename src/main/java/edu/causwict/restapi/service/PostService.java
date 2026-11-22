@@ -16,14 +16,40 @@ public class PostService {
 		this.postRepository = postRepository;
 	}
 
+	private static final int MAX_TITLE_LENGTH = 30;
+
 	public Post create(String title, String content) {
+		validateTitleFormat(title);
+		if (postRepository.existsByTitle(title)) {
+			throw duplicateTitle();
+		}
+
 		Post post = new Post(null, title, content);
 		return postRepository.save(post);
+	}
+
+	private ResponseStatusException duplicateTitle() {
+		return new ResponseStatusException(HttpStatus.CONFLICT, "이미 같은 제목의 게시글이 있습니다.");
+	}
+
+	private void validateTitleFormat(String title) {
+		if (title == null || title.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "제목은 비어 있을 수 없습니다.");
+		}
+		if (title.codePointCount(0, title.length()) > MAX_TITLE_LENGTH) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
+				"제목은 " + MAX_TITLE_LENGTH + "자를 넘을 수 없습니다.");
+		}
 	}
 
 	public Post update(Long id, String title, String content) {
 		Post post = postRepository.findById(id)
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다. id=" + id));
+
+		validateTitleFormat(title);
+		if (postRepository.existsByTitleAndIdNot(title, id)) {
+			throw duplicateTitle();
+		}
 
 		post.setTitle(title);
 		post.setContent(content);
