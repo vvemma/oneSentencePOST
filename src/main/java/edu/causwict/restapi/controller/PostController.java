@@ -1,7 +1,9 @@
 package edu.causwict.restapi.controller;
 
+import java.util.List;
 import java.util.Map;
 
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,6 +32,12 @@ public class PostController {
 		Post created = postService.create(title, content);
 
 		return created;
+	}
+
+	// Read (list)
+	@GetMapping
+	public List<Post> list() {
+		return postService.findAll();
 	}
 
 	// Update
