@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import edu.causwict.restapi.entity.Post;
@@ -38,6 +39,12 @@ public class PostController {
 	@GetMapping
 	public List<Post> list() {
 		return postService.findAll();
+	}
+
+	// Search (title keyword)
+	@GetMapping("/search")
+	public List<Post> search(@RequestParam(required = false) String keyword) {
+		return postService.searchByTitle(keyword);
 	}
 
 	// Update

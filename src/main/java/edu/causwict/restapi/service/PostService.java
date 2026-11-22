@@ -51,6 +51,15 @@ public class PostService {
 			.toList();
 	}
 
+	public List<Post> searchByTitle(String keyword) {
+		if (keyword == null || keyword.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비어 있을 수 없습니다.");
+		}
+		return postRepository.findByTitleContaining(keyword.strip()).stream()
+			.sorted(Comparator.comparing(Post::getId))
+			.toList();
+	}
+
 	public Post update(Long id, String title, String content) {
 		Post post = postRepository.findById(id)
 			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "게시글을 찾을 수 없습니다. id=" + id));
