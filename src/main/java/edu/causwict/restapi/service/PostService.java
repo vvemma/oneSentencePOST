@@ -1,5 +1,8 @@
 package edu.causwict.restapi.service;
 
+import java.util.Comparator;
+import java.util.List;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -40,6 +43,21 @@ public class PostService {
 			throw new ResponseStatusException(HttpStatus.BAD_REQUEST,
 				"제목은 " + MAX_TITLE_LENGTH + "자를 넘을 수 없습니다.");
 		}
+	}
+
+	public List<Post> findAll() {
+		return postRepository.findAll().stream()
+			.sorted(Comparator.comparing(Post::getId))
+			.toList();
+	}
+
+	public List<Post> searchByTitle(String keyword) {
+		if (keyword == null || keyword.isBlank()) {
+			throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "검색어는 비어 있을 수 없습니다.");
+		}
+		return postRepository.findByTitleContaining(keyword.strip()).stream()
+			.sorted(Comparator.comparing(Post::getId))
+			.toList();
 	}
 
 	public Post update(Long id, String title, String content) {

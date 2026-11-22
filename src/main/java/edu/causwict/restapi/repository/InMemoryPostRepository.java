@@ -33,6 +33,13 @@ public class InMemoryPostRepository {
 		return Optional.ofNullable(store.get(id));
 	}
 
+	public List<Post> findByTitleContaining(String keyword) {
+		String lowerKeyword = keyword.toLowerCase();
+		return store.values().stream()
+			.filter(post -> post.getTitle() != null && post.getTitle().toLowerCase().contains(lowerKeyword))
+			.toList();
+	}
+
 	public boolean existsByTitle(String title) {
 		return store.values().stream()
 			.anyMatch(post -> title.equals(post.getTitle()));
